@@ -1,0 +1,42 @@
+{
+    "name": "kwidoo/sms-verifications",
+    "description": "A flexible SMS verification package supporting multiple providers",
+    "keywords": [
+        "kwidoo",
+        "sms-verifications"
+    ],
+    "homepage": "https://github.com/kwidoo/sms-verifications",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Oleg Pashkovsky",
+            "email": "oleg@pashkovsky.me",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kwidoo\\SmsVerifications\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kwidoo\\SmsVerifications\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

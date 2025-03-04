@@ -3,6 +3,7 @@
 namespace Kwidoo\SmsVerification\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 
 class CreateSmsVerifier extends Command
 {
@@ -33,19 +34,20 @@ class CreateSmsVerifier extends Command
             return;
         }
 
-        // Determine the directory for verifiers (you can customize).
+        // Determine the directory for verifiers.
         $directory = app_path('Verifiers');
 
-        // If the directory does not exist, create it.
-        if (!is_dir($directory)) {
-            mkdir($directory, 0755, true);
+        // If the directory does not exist, create it using the File facade.
+        if (!File::isDirectory($directory)) {
+            File::makeDirectory($directory, 0755, true);
             $this->info("Created directory: {$directory}");
         }
 
         // Determine the file path for the new verifier.
         $filePath = $directory . '/' . $name . '.php';
 
-        if (file_exists($filePath)) {
+        // Use the File facade to check if the file exists.
+        if (File::exists($filePath)) {
             $this->error("A verifier with the name {$name} already exists.");
             return;
         }
@@ -91,8 +93,8 @@ STUB;
         $stub = str_replace('{name}', $name, $stub);
         $stub = str_replace('{client}', $clientClass, $stub);
 
-        // Write the new verifier file.
-        file_put_contents($filePath, $stub);
+        // Use the File facade to write the new verifier file.
+        File::put($filePath, $stub);
         $this->info("Verifier {$name} created successfully at {$filePath}");
     }
 }

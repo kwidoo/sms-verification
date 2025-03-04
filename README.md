@@ -1,15 +1,12 @@
-# Very short description of the package
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/kwidoo/sms-verifications.svg?style=flat-square)](https://packagist.org/packages/kwidoo/sms-verifications)
-[![Total Downloads](https://img.shields.io/packagist/dt/kwidoo/sms-verifications.svg?style=flat-square)](https://packagist.org/packages/kwidoo/sms-verifications)
-![GitHub Actions](https://github.com/kwidoo/sms-verifications/actions/workflows/main.yml/badge.svg)
-Below is a **sample** `README.md` you can include with your package. This outlines its purpose, installation steps, configuration details, and usage examples. Feel free to adjust the sections or wording as needed to match your project or coding style.
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/kwidoo/sms-verification.svg?style=flat-square)](https://packagist.org/packages/kwidoo/sms-verification)
+[![Total Downloads](https://img.shields.io/packagist/dt/kwidoo/sms-verification.svg?style=flat-square)](https://packagist.org/packages/kwidoo/sms-verification)
+![GitHub Actions](https://github.com/kwidoo/sms-verification/actions/workflows/main.yml/badge.svg)
 
 ---
 
-# Kwidoo SMS Verification
+# Laravel SMS Verification
 
-> A Laravel package for sending and validating SMS-based verification codes through multiple providers (e.g., **Twilio**, **Vonage**, or any custom provider**).
+> A Laravel package for sending and validating SMS-based verification codes through multiple providers (e.g., **Twilio**, **Vonage**, or any custom provider\*\*).
 
 ## Overview
 
@@ -44,6 +41,7 @@ Below is a **sample** `README.md` you can include with your package. This outlin
 2. **Publish Config (Optional)**:
 
    This will publish `sms-verification.php` into your Laravel `config` directory.
+
    ```bash
    php artisan vendor:publish --provider="Kwidoo\SmsVerification\SmsVerificationProvider" --tag="sms-verification-config"
    ```
@@ -144,7 +142,7 @@ If you only want to use **one** provider (e.g., Twilio) for all verifications:
 
 ### Round Robin Usage
 
-If you want to **rotate** between providers (e.g., Twilio → Vonage → Twilio → Vonage…), you can request the *round-robin* verifier:
+If you want to **rotate** between providers (e.g., Twilio → Vonage → Twilio → Vonage…), you can request the _round-robin_ verifier:
 
 1. **`round_robin`** is an array of strings referencing your verifiers: `['twilio', 'vonage']`.
 2. In your code, you might do:
@@ -294,9 +292,10 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 ---
 
 # TODO
+
 - [ ] Make more round-robin strategies (e.g., Weighted Round Robin, Random, etc.).
 - [ ] Implement a “fallback” approach (try one provider; if it fails, try another).
-- [ ] Add tests.
+- [x] Add tests.
 - [ ] Add webhook support to better handle fails
 - [ ] Add support for other SMS providers:
 - [ ] Plivo

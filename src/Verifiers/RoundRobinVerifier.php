@@ -64,7 +64,7 @@ class RoundRobinVerifier extends Verifier implements VerifierInterface
 
         $cacheKey = config('sms-verification.round_robin.verifier_for_number_cache_key', 'round_robin_verifier_for_');
 
-        $number = $this->sanitizePhoneNumber($$credentials[0]);
+        $number = $this->sanitizePhoneNumber($credentials[0]);
 
         $verifierIndex = cache()->pull("{$cacheKey}{$number}");
 

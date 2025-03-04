@@ -14,7 +14,7 @@ return [
     'vonage' => [
         'api_key' => config('vonage.api_key', env('VONAGE_API_KEY')),
         'api_secret' => config('vonage.api_secret', env('VONAGE_API_SECRET')),
-        'brand' => config('vonage.brand', env('VONAGE_BRAND')),
+        'brand' => config('vonage.brand', env('VONAGE_BRAND', 'Kwidoo')),
     ],
     'twilio' => [
         'sid' => config('twilio.sid', env('TWILIO_SID')),

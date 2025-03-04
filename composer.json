@@ -1,11 +1,11 @@
 {
-    "name": "kwidoo/sms-verifications",
+    "name": "kwidoo/sms-verification",
     "description": "A flexible SMS verification package supporting multiple providers",
     "keywords": [
         "kwidoo",
-        "sms-verifications"
+        "sms-verification"
     ],
-    "homepage": "https://github.com/kwidoo/sms-verifications",
+    "homepage": "https://github.com/kwidoo/sms-verification",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -16,27 +16,38 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0"
+        "php": "^7.4|^8.0",
+        "twilio/sdk": "^8.3",
+        "vonage/client": "^4.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
         "psr-4": {
-            "Kwidoo\\SmsVerifications\\": "src"
+            "Kwidoo\\SmsVerification\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kwidoo\\SmsVerifications\\Tests\\": "tests"
+            "Kwidoo\\SmsVerification\\Tests\\": "tests"
         }
     },
     "scripts": {
         "test": "vendor/bin/phpunit",
         "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Kwidoo\\SmsVerification\\SmsVerificationProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
     }
 }

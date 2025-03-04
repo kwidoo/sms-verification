@@ -4,14 +4,16 @@ namespace Kwidoo\SmsVerification\Verifiers;
 
 use Kwidoo\SmsVerification\Contracts\VerifierInterface;
 use Kwidoo\SmsVerification\Exceptions\VerifierException;
-use Twilio\Rest\Client;
+use Kwidoo\SmsVerification\Verifiers\Verifier;
+use Vonage\Client;
+use Vonage\Verify2\Request\SMSRequest;
 
-class TwilioVerifier extends Verifier implements VerifierInterface
+class VonageVerifier extends Verifier implements VerifierInterface
 {
     public function __construct(protected Client $client) {}
 
     /**
-     * @param string $username Phone number for Twilio verification
+     * @param string $phoneNumber Phone number for Vonage verification
      *
      * @return void
      */
@@ -19,16 +21,15 @@ class TwilioVerifier extends Verifier implements VerifierInterface
     {
         $number = $this->sanitizePhoneNumber($phoneNumber);
 
-        $verifySid = config('sms-verification.twilio.verify_sid');
-        if (!$verifySid) {
-            throw new VerifierException('Twilio verify SID is not configured.');
+        $newRequest = new SMSRequest($number, config('sms-verification.vonage.brand', 'MyApp'));
+        $response = $this->client->verify2()->startVerification($newRequest);
+
+        if (!isset($response['request_id'])) {
+            throw new VerifierException('Failed to get a valid Vonage request ID.');
         }
 
-        $this->client->verify->v2->services($verifySid)
-            ->verifications
-            ->create($number, 'sms');
+        cache()->put("vonage$number", $response['request_id'], now()->addMinutes(5));
     }
-
 
     /**
      * @param array $credentials [phone number, verification code]
@@ -43,24 +44,17 @@ class TwilioVerifier extends Verifier implements VerifierInterface
 
         [$phoneNumber, $verificationCode] = $credentials;
 
+
         $number = $this->sanitizePhoneNumber($phoneNumber);
 
-        $verifySid = config('sms-verification.twilio.verify_sid');
-        if (!$verifySid) {
-            throw new VerifierException('Twilio verify SID is not configured.');
+        $requestId = cache()->pull("vonage$number");
+        if (!$requestId) {
+            throw new VerifierException('No Vonage verification request found for this number.');
         }
 
-        $verification = $this->client
-            ->verify
-            ->v2
-            ->services($verifySid)
-            ->verificationChecks
-            ->create([
-                'to' => $number,
-                'code' => $verificationCode,
-            ]);
+        $response = $this->client->verify2()->check($requestId, $verificationCode);
 
-        if (!$verification || !$verification->valid) {
+        if (!$response) {
             throw new VerifierException('Invalid verification code');
         }
 

@@ -3,6 +3,7 @@
 namespace Kwidoo\SmsVerification;
 
 use Illuminate\Support\ServiceProvider;
+use Kwidoo\SmsVerification\Clients\SinchClient;
 use Twilio\Rest\Client as TwilioClient;
 use Vonage\Client as VonageClient;
 use Plivo\RestClient as PlivoClient;
@@ -55,6 +56,14 @@ class SmsVerificationProvider extends ServiceProvider
             return new PlivoClient(
                 config('sms-verification.plivo.auth_id'),
                 config('sms-verification.plivo.auth_token')
+            );
+        });
+
+        $this->app->singleton(SinchClient::class, function () {
+            return new SinchClient(
+                config('sms-verification.sinch.api_key'),
+                config('sms-verification.sinch.api_secret'),
+                config('sms-verification.sinch.verification_url')
             );
         });
 

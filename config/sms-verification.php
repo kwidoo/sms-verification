@@ -5,6 +5,7 @@ return [
         'twilio' => \Kwidoo\SmsVerification\Verifiers\TwilioVerifier::class,
         'vonage' => \Kwidoo\SmsVerification\Verifiers\VonageVerifier::class,
         'telnyx' => \Kwidoo\SmsVerification\Verifiers\TelnyxVerifier::class,
+        'plivo' => \Kwidoo\SmsVerification\Verifiers\PlivoVerifier::class,
     ],
     'default' => 'twilio',
     'round_robin' => [
@@ -31,5 +32,10 @@ return [
         'auth_id' => config('plivo.auth_id', env('PLIVO_AUTH_ID')),
         'auth_token' => config('plivo.auth_token', env('PLIVO_AUTH_TOKEN')),
         'optional_args' => config('plivo.optional_args', []),
+    ],
+    'sinch' => [
+        'api_key' => config('sinch.api_key', env('SINCH_API_KEY')),
+        'api_secret' => config('sinch.api_secret', env('SINCH_API_SECRET')),
+        'verification_url' => config('sinch.verification_url', env('SINCH_VERIFICATION_URL', 'https://verification.api.sinch.com')),
     ],
 ];

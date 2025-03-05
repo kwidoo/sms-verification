@@ -299,7 +299,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [ ] Add webhook support to better handle fails
 - [ ] Add support for other SMS providers:
 - [x] Plivo
-- [ ] Sinch
+- [x] Sinch
 - [ ] MessageBird
 - [ ] Telesign
 - [ ] ClickSend

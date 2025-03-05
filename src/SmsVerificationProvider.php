@@ -9,7 +9,7 @@ use Vonage\Client as VonageClient;
 use Plivo\RestClient as PlivoClient;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Client\Credentials\Container as CredentialsContainer;
-
+use telesign\sdk\messaging\MessagingClient as TelesignClient;
 use Kwidoo\SmsVerification\Console\Commands\CreateSmsVerifier;
 
 
@@ -64,6 +64,13 @@ class SmsVerificationProvider extends ServiceProvider
                 config('sms-verification.sinch.api_key'),
                 config('sms-verification.sinch.api_secret'),
                 config('sms-verification.sinch.verification_url')
+            );
+        });
+
+        $this->app->singleton(TelesignClient::class, function () {
+            return new TelesignClient(
+                config('sms-verification.telesign.customer_id'),
+                config('sms-verification.telesign.api_key')
             );
         });
 

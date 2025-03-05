@@ -20,7 +20,8 @@
         "twilio/sdk": "^8.3",
         "vonage/client": "^4.1",
         "telnyx/telnyx-php": "^3.0",
-        "plivo/plivo-php": "^4.66.5"
+        "plivo/plivo-php": "^4.66.5",
+        "telesign/telesign": "^3.0.4"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",

@@ -300,12 +300,11 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [ ] Add support for other SMS providers:
 - [x] Plivo
 - [x] Sinch
-- [ ] MessageBird
-- [ ] Telesign
+- [ ] [seven.io](https://www.seven.io/)
+- [x] Telesign
 - [ ] ClickSend
+- [ ] Textmagic
+- [ ] SlickText
 - [ ] Infobip
-- [ ] SMSGlobal
-- [ ] Textlocal
 - [ ] Routee
-- [ ] Kaleyra
 - [x] Telnyx

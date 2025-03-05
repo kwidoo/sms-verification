@@ -3,16 +3,23 @@
 namespace Kwidoo\SmsVerification;
 
 use Illuminate\Contracts\Container\Container;
+use Kwidoo\SmsVerification\Clients\SinchClient;
 use Kwidoo\SmsVerification\Contracts\VerifierInterface;
 use Kwidoo\SmsVerification\Exceptions\VerifierException;
 use Kwidoo\SmsVerification\Verifiers\PlivoVerifier;
 use Kwidoo\SmsVerification\Verifiers\RoundRobinVerifier;
+use Kwidoo\SmsVerification\Verifiers\SevenVerifier;
+use Kwidoo\SmsVerification\Verifiers\SinchVerifier;
+use Kwidoo\SmsVerification\Verifiers\TelesignVerifier;
+use Kwidoo\SmsVerification\Verifiers\TelnyxVerifier;
 use Kwidoo\SmsVerification\Verifiers\TwilioVerifier;
 use Kwidoo\SmsVerification\Verifiers\VonageVerifier;
 
 use Twilio\Rest\Client as TwilioClient;
 use Vonage\Client as VonageClient;
 use Plivo\RestClient as PlivoClient;
+use Seven\Api\Client as SevenClient;
+use telesign\sdk\messaging\MessagingClient as TelesignClient;
 
 class VerifierFactory
 {
@@ -98,5 +105,45 @@ class VerifierFactory
     protected function makePlivo(): VerifierInterface
     {
         return new PlivoVerifier($this->app->make(PlivoClient::class));
+    }
+
+    /**
+     * Create an instance of SinchVerifier.
+     *
+     * @return VerifierInterface
+     */
+    protected function makeSinch(): VerifierInterface
+    {
+        return new SinchVerifier($this->app->make(SinchClient::class));
+    }
+
+    /**
+     * Create an instance of TelesignVerifier.
+     *
+     * @return VerifierInterface
+     */
+    protected function makeTelesign(): VerifierInterface
+    {
+        return new TelesignVerifier($this->app->make(TelesignClient::class));
+    }
+
+    /**
+     * Create an instance of SevenVerifier.
+     *
+     * @return VerifierInterface
+     */
+    protected function makeSeven(): VerifierInterface
+    {
+        return new SevenVerifier($this->app->make(SevenClient::class));
+    }
+
+    /**
+     * Create an instance of TelnyxVerifier.
+     *
+     * @return VerifierInterface
+     */
+    public function makeTelnyx(): VerifierInterface
+    {
+        return new TelnyxVerifier();
     }
 }

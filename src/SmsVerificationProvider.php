@@ -7,6 +7,7 @@ use Kwidoo\SmsVerification\Clients\SinchClient;
 use Twilio\Rest\Client as TwilioClient;
 use Vonage\Client as VonageClient;
 use Plivo\RestClient as PlivoClient;
+use Seven\Api\Client as SevenClient;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Client\Credentials\Container as CredentialsContainer;
 use telesign\sdk\messaging\MessagingClient as TelesignClient;
@@ -71,6 +72,12 @@ class SmsVerificationProvider extends ServiceProvider
             return new TelesignClient(
                 config('sms-verification.telesign.customer_id'),
                 config('sms-verification.telesign.api_key')
+            );
+        });
+
+        $this->app->singleton(SevenClient::class, function () {
+            return new SevenClient(
+                config('sms-verification.sevenio.api_key'),
             );
         });
 

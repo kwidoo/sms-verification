@@ -281,6 +281,11 @@ Route::post('/verify-code', function(\Illuminate\Http\Request $request, Verifier
 
 - **Twilio** for their robust Verify service.
 - **Vonage** (formerly Nexmo) for their Verify APIs.
+- **Sinch** for their SMS verification service.
+- **Telnyx** for their Verify API.
+- **Plivo** for their SMS verification service.
+- **seven.io** for their SMS verification service.
+- **Telesign** for their SMS verification service.
 - **Laravel** community for a great framework to extend.
 
 ---
@@ -300,7 +305,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [ ] Add support for other SMS providers:
 - [x] Plivo
 - [x] Sinch
-- [ ] [seven.io](https://www.seven.io/)
+- [x] [seven.io](https://www.seven.io/)
 - [x] Telesign
 - [ ] ClickSend
 - [ ] Textmagic

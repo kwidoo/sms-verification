@@ -6,6 +6,9 @@ return [
         'vonage' => \Kwidoo\SmsVerification\Verifiers\VonageVerifier::class,
         'telnyx' => \Kwidoo\SmsVerification\Verifiers\TelnyxVerifier::class,
         'plivo' => \Kwidoo\SmsVerification\Verifiers\PlivoVerifier::class,
+        'sinch' => \Kwidoo\SmsVerification\Verifiers\SinchVerifier::class,
+        'telesign' => \Kwidoo\SmsVerification\Verifiers\TelesignVerifier::class,
+        'seven' => \Kwidoo\SmsVerification\Verifiers\SevenVerifier::class,
     ],
     'default' => 'twilio',
     'round_robin' => [
@@ -37,5 +40,12 @@ return [
         'api_key' => config('sinch.api_key', env('SINCH_API_KEY')),
         'api_secret' => config('sinch.api_secret', env('SINCH_API_SECRET')),
         'verification_url' => config('sinch.verification_url', env('SINCH_VERIFICATION_URL', 'https://verification.api.sinch.com')),
+    ],
+    'telesign' => [
+        'customer_id' => config('telesign.customer_id', env('TELESIGN_CUSTOMER_ID')),
+        'api_key' => config('telesign.api_key', env('TELESIGN_API_KEY')),
+    ],
+    'sevenio' => [
+        'api_key' => config('sevenio.api_key', env('SEVENIO_API_KEY')),
     ],
 ];

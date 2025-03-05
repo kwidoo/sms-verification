@@ -4,6 +4,7 @@ return [
     'verifiers' => [
         'twilio' => \Kwidoo\SmsVerification\Verifiers\TwilioVerifier::class,
         'vonage' => \Kwidoo\SmsVerification\Verifiers\VonageVerifier::class,
+        'telnyx' => \Kwidoo\SmsVerification\Verifiers\TelnyxVerifier::class,
     ],
     'default' => 'twilio',
     'round_robin' => [
@@ -20,5 +21,10 @@ return [
         'sid' => config('twilio.sid', env('TWILIO_SID')),
         'auth_token' => config('twilio.auth_token', env('TWILIO_AUTH_TOKEN')),
         'verify_sid' => config('twilio.verify_sid', env('TWILIO_VERIFY_SID')),
+    ],
+    'telnyx' => [
+        'api_key' => config('telnyx.api_key', env('TELNYX_API_KEY')),
+        'public_key' => config('telnyx.public_key', env('TELNYX_PUBLIC_KEY')),
+        'verify_sid' => config('telnyx.verify_sid', env('TELNYX_VERIFY_SID')),
     ],
 ];

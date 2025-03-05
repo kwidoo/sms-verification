@@ -27,4 +27,9 @@ return [
         'public_key' => config('telnyx.public_key', env('TELNYX_PUBLIC_KEY')),
         'verify_sid' => config('telnyx.verify_sid', env('TELNYX_VERIFY_SID')),
     ],
+    'plivo' => [
+        'auth_id' => config('plivo.auth_id', env('PLIVO_AUTH_ID')),
+        'auth_token' => config('plivo.auth_token', env('PLIVO_AUTH_TOKEN')),
+        'optional_args' => config('plivo.optional_args', []),
+    ],
 ];

@@ -5,13 +5,14 @@ namespace Kwidoo\SmsVerification;
 use Illuminate\Contracts\Container\Container;
 use Kwidoo\SmsVerification\Contracts\VerifierInterface;
 use Kwidoo\SmsVerification\Exceptions\VerifierException;
+use Kwidoo\SmsVerification\Verifiers\PlivoVerifier;
 use Kwidoo\SmsVerification\Verifiers\RoundRobinVerifier;
 use Kwidoo\SmsVerification\Verifiers\TwilioVerifier;
 use Kwidoo\SmsVerification\Verifiers\VonageVerifier;
 
 use Twilio\Rest\Client as TwilioClient;
 use Vonage\Client as VonageClient;
-
+use Plivo\RestClient as PlivoClient;
 
 class VerifierFactory
 {
@@ -87,5 +88,15 @@ class VerifierFactory
     protected function makeVonage(): VerifierInterface
     {
         return new VonageVerifier($this->app->make(VonageClient::class));
+    }
+
+    /**
+     * Create an instance of VonageVerifier.
+     *
+     * @return VerifierInterface
+     */
+    protected function makePlivo(): VerifierInterface
+    {
+        return new PlivoVerifier($this->app->make(PlivoClient::class));
     }
 }

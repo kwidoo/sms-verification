@@ -298,7 +298,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [x] Add tests.
 - [ ] Add webhook support to better handle fails
 - [ ] Add support for other SMS providers:
-- [ ] Plivo
+- [x] Plivo
 - [ ] Sinch
 - [ ] MessageBird
 - [ ] Telesign
@@ -308,3 +308,4 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [ ] Textlocal
 - [ ] Routee
 - [ ] Kaleyra
+- [x] Telnyx

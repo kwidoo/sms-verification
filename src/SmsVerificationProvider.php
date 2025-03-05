@@ -5,6 +5,7 @@ namespace Kwidoo\SmsVerification;
 use Illuminate\Support\ServiceProvider;
 use Twilio\Rest\Client as TwilioClient;
 use Vonage\Client as VonageClient;
+use Plivo\RestClient as PlivoClient;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Client\Credentials\Container as CredentialsContainer;
 
@@ -48,6 +49,13 @@ class SmsVerificationProvider extends ServiceProvider
             $client = new VonageClient(new CredentialsContainer($basic));
 
             return $client;
+        });
+
+        $this->app->singleton(PlivoClient::class, function () {
+            return new PlivoClient(
+                config('sms-verification.plivo.auth_id'),
+                config('sms-verification.plivo.auth_token')
+            );
         });
 
         $this->app->singleton(VerifierFactory::class, function ($app) {

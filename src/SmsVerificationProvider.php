@@ -68,12 +68,12 @@ class SmsVerificationProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(TelesignClient::class, function () {
-            return new TelesignClient(
-                config('sms-verification.telesign.customer_id'),
-                config('sms-verification.telesign.api_key')
-            );
-        });
+        // $this->app->singleton(TelesignClient::class, function () {
+        //     return new TelesignClient(
+        //         config('sms-verification.telesign.customer_id'),
+        //         config('sms-verification.telesign.api_key')
+        //     );
+        // });
 
         $this->app->singleton(SevenClient::class, function () {
             return new SevenClient(

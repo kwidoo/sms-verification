@@ -306,7 +306,7 @@ This package is open-sourced software licensed under the [MIT license](LICENSE).
 - [x] Plivo
 - [x] Sinch
 - [x] [seven.io](https://www.seven.io/)
-- [x] Telesign
+- [ ] Telesign
 - [ ] ClickSend
 - [ ] Textmagic
 - [ ] SlickText

@@ -37,14 +37,9 @@ class TelesignVerifier extends Verifier implements VerifierInterface
         $number = $this->sanitizePhoneNumber($phoneNumber);
 
         $code = cache()->pull("telesign$number");
-        if (!$code) {
+        if (!$code || $code !== $verificationCode) {
             throw new VerifierException('No Telesign verification request found for this number.');
         }
-
-        if ($code !== $verificationCode) {
-            throw new VerifierException('Invalid verification code');
-        }
-
 
         return true;
     }

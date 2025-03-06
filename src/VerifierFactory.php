@@ -122,10 +122,10 @@ class VerifierFactory
      *
      * @return VerifierInterface
      */
-    protected function makeTelesign(): VerifierInterface
-    {
-        return new TelesignVerifier($this->app->make(TelesignClient::class));
-    }
+    // protected function makeTelesign(): VerifierInterface
+    // {
+    //     return new TelesignVerifier($this->app->make(TelesignClient::class));
+    // }
 
     /**
      * Create an instance of SevenVerifier.

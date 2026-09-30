@@ -264,6 +264,23 @@ TELESIGN_CODE_TTL=300
 SMS_VERIFICATION_CODE_KEY=
 ```
 
+Full-service (enterprise) Telesign accounts can let Telesign own the code instead. Same credentials:
+
+| Factory name | API | Code generated / checked by |
+|---|---|---|
+| `telesign` | Messaging API `POST /v1/messaging` | this package (HMAC-sealed challenge) |
+| `telesignVerify` | Verify API `verify.telesign.com/verification` | Telesign |
+| `telesignSmsVerify` | SMS Verify API `/v1/verify/sms` | Telesign |
+
+```env
+TELESIGN_VERIFY_ENDPOINT=https://verify.telesign.com
+TELESIGN_VERIFY_METHODS=sms            # ordered policy, e.g. "whatsapp,sms"
+TELESIGN_VERIFY_MESSAGE_TEMPLATE=      # template name configured with Telesign
+TELESIGN_SMS_VERIFY_ENDPOINT=https://rest-ww.telesign.com
+TELESIGN_SMS_VERIFY_TEMPLATE="Your code is :code"   # or $$CODE$$
+TELESIGN_SMS_VERIFY_LANGUAGE=
+```
+
 ---
 
 ## Console Command

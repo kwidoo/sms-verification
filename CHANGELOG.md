@@ -15,6 +15,11 @@ All notable changes to `sms-verifications` will be documented in this file
 - Fix: Telesign `validate()` compared a cached int with the submitted string, so it never succeeded.
 - Codes come from `random_int()` (was `rand()`), 6 digits by default (`TELESIGN_CODE_LENGTH`),
   message template and TTL configurable (`TELESIGN_MESSAGE` with `:code`, `TELESIGN_CODE_TTL`).
+- New `TelesignVerifyVerifier` (Verify API, `verify.telesign.com`) and `TelesignSmsVerifyVerifier`
+  (SMS Verify API, `/v1/verify/sms`) for full-service accounts: Telesign generates and checks the code, the
+  challenge carries only `reference_id`. Factory names `telesignVerify`, `telesignSmsVerify`; requires
+  `telesign/telesignenterprise` ^5.3.
+- Telesign numbers are sent as digits only (no `+`), as Telesign requires.
 - Telesign send failures raise `VerifierException` with Telesign's status and errors (the
   response object used to be treated as always successful).
 

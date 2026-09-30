@@ -13,6 +13,7 @@ use Kwidoo\SmsVerification\Tests\TestCase;
 use Kwidoo\SmsVerification\VerifierFactory;
 use Kwidoo\SmsVerification\Verifiers\TelesignSmsVerifyVerifier;
 use Kwidoo\SmsVerification\Verifiers\TelesignVerifyVerifier;
+use PHPUnit\Framework\Attributes\DataProvider;
 use telesign\enterprise\sdk\verify\OmniVerifyClient;
 use telesign\enterprise\sdk\verify\VerifyClient;
 
@@ -113,9 +114,7 @@ class TelesignVerifyVerifiersTest extends TestCase
         $this->assertSame(['action' => 'finalize', 'security_factor' => '5724433'], $this->body(0));
     }
 
-    /**
-     * @dataProvider rejectedVerifyStatuses
-     */
+    #[DataProvider('rejectedVerifyStatuses')]
     public function testVerifyApiRejectionsAreAVerdict(int $http, int $status): void
     {
         $verifier = $this->verify();
@@ -215,9 +214,7 @@ class TelesignVerifyVerifiersTest extends TestCase
         $this->assertSame(['phone_number' => '37120000000'], $fields);
     }
 
-    /**
-     * @dataProvider smsVerifyStates
-     */
+    #[DataProvider('smsVerifyStates')]
     public function testSmsVerifyChecksTheCodeState(string $state, bool $expected): void
     {
         $verifier = $this->smsVerify();

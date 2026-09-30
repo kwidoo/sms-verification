@@ -19,6 +19,21 @@ All notable changes to `sms-verifications` will be documented in this file
   (SMS Verify API, `/v1/verify/sms`) for full-service accounts: Telesign generates and checks the code, the
   challenge carries only `reference_id`. Factory names `telesignVerify`, `telesignSmsVerify`; requires
   `telesign/telesignenterprise` ^5.3.
+- Challenge drivers: `ChallengeDriver` + `ChallengeDrivers` registry build a `ChallengeVerifierInterface` per call from a
+  plain config array and a `ChallengeRuntime` (host Guzzle handler, code key, timeout), and declare their options and
+  log redaction. For multi-tenant hosts that cannot use the global `.env` config. Drivers: `telesign`, `telesign_verify`,
+  `telesign_sms_verify`. Configuration problems raise `ConfigurationException` (a `VerifierException`).
+- Drivers and the stateless challenge API for every provider: `twilio`, `vonage`, `telnyx`, `plivo`, `sinch`, `seven`
+  (next to the three Telesign ones). All verifiers implement `ChallengeVerifierInterface`; constructors stay compatible
+  (new optional arguments only) and the 1.x `create()`/`validate()` behave as before, except for the fixes below.
+- Fix: Telnyx `validate()` never submitted the code and compared `!$status === 'accepted'` (always false), so every code
+  passed. It now checks the code (`POST /verifications/{id}/actions/verify`). Telnyx calls go through the new
+  `Clients\TelnyxVerifyClient` instead of the SDK's static client.
+- Fix: seven.io generated codes with `rand()` and compared them as ints (`0123` == `123`); now `random_int()` and a
+  constant-time string comparison.
+- Fix: Plivo read `session_uuid` / `message` from response objects as arrays, which never worked.
+- `SinchClient` takes an optional Guzzle handler and timeout, and can report a code by verification id.
+- New `Clients\SevenHttpClient` sends seven.io SDK calls over Guzzle.
 - Telesign numbers are sent as digits only (no `+`), as Telesign requires.
 - Telesign send failures raise `VerifierException` with Telesign's status and errors (the
   response object used to be treated as always successful).

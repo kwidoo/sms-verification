@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.0",
         "plivo/plivo-php": "^4.66.5",
         "seven.io/api": "6.0.0",
         "telesign/telesign": "^5.2",

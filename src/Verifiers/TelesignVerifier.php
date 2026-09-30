@@ -2,14 +2,13 @@
 
 namespace Kwidoo\SmsVerification\Verifiers;
 
-use DateTimeImmutable;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Kwidoo\SmsVerification\Challenge\Challenge;
 use Kwidoo\SmsVerification\Challenge\OtpGenerator;
 use Kwidoo\SmsVerification\Challenge\OtpHasher;
 use Kwidoo\SmsVerification\Contracts\ChallengeVerifierInterface;
 use Kwidoo\SmsVerification\Contracts\VerifierInterface;
 use Kwidoo\SmsVerification\Exceptions\VerifierException;
+use Kwidoo\SmsVerification\Verifiers\Concerns\SealsCodes;
 use Kwidoo\SmsVerification\Verifiers\Concerns\TalksToTelesign;
 use telesign\sdk\messaging\MessagingClient;
 
@@ -27,6 +26,7 @@ use telesign\sdk\messaging\MessagingClient;
  */
 class TelesignVerifier extends Verifier implements VerifierInterface, ChallengeVerifierInterface
 {
+    use SealsCodes;
     use TalksToTelesign;
 
     public const DEFAULT_MESSAGE = 'Your verification code is :code';
@@ -50,52 +50,12 @@ class TelesignVerifier extends Verifier implements VerifierInterface, ChallengeV
         protected ?CacheRepository $cache = null,
     ) {}
 
-    public function dispatch(string $recipient): Challenge
-    {
-        if ($this->hasher === null) {
-            throw new VerifierException('Telesign challenge verification requires a code key.');
-        }
-
-        $number = $this->sanitizePhoneNumber($recipient);
-        $code = $this->generator->generate($this->codeLength());
-        $reference = $this->send($number, $code);
-        $expiresAt = new DateTimeImmutable(sprintf('+%d seconds', $this->ttl()));
-
-        return new Challenge(
-            recipient: $number,
-            reference: $reference,
-            state: $this->hasher->seal($code, $number, $reference, $expiresAt),
-            expiresAt: $expiresAt,
-        );
-    }
-
-    public function verify(Challenge $challenge, string $code): bool
-    {
-        if ($this->hasher === null) {
-            throw new VerifierException('Telesign challenge verification requires a code key.');
-        }
-
-        $code = trim($code);
-
-        if ($code === '' || !ctype_digit($code) || $challenge->isExpired()) {
-            return false;
-        }
-
-        return $this->hasher->matches(
-            $challenge->state,
-            $code,
-            $this->sanitizePhoneNumber($challenge->recipient),
-            $challenge->reference,
-            $challenge->expiresAt,
-        );
-    }
-
     public function create(string $phoneNumber): void
     {
         $number = $this->sanitizePhoneNumber($phoneNumber);
         $code = $this->generator->generate($this->codeLength());
 
-        $this->send($number, $code);
+        $this->sendCode($number, $code);
 
         $this->cache()->put(self::CACHE_PREFIX.$number, $code, now()->addSeconds($this->ttl()));
     }
@@ -125,9 +85,9 @@ class TelesignVerifier extends Verifier implements VerifierInterface, ChallengeV
      *
      * @throws VerifierException
      */
-    protected function send(string $number, string $code): string
+    protected function sendCode(string $number, string $code): string
     {
-        $message = str_replace(':code', $code, (string) ($this->options['message'] ?? self::DEFAULT_MESSAGE));
+        $message = $this->messageFor($code, self::DEFAULT_MESSAGE);
 
         $response = $this->callTelesign(fn () => $this->client->message(
             $this->telesignNumber($number),
@@ -136,16 +96,6 @@ class TelesignVerifier extends Verifier implements VerifierInterface, ChallengeV
         ));
 
         return $this->referenceFrom($response, 'message');
-    }
-
-    private function codeLength(): int
-    {
-        return (int) ($this->options['code_length'] ?? self::DEFAULT_CODE_LENGTH);
-    }
-
-    private function ttl(): int
-    {
-        return max(1, (int) ($this->options['ttl'] ?? self::DEFAULT_TTL));
     }
 
     private function cache(): CacheRepository

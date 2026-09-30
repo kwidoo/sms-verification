@@ -283,6 +283,62 @@ TELESIGN_SMS_VERIFY_LANGUAGE=
 
 ---
 
+## Challenge drivers (per-call configuration)
+
+`VerifierFactory` builds verifiers from the application's config. A host that serves several tenants, each with its
+own credentials, uses the driver registry instead: it builds a stateless verifier from a plain array per call.
+
+```php
+use Kwidoo\SmsVerification\Challenge\ChallengeDrivers;
+use Kwidoo\SmsVerification\Challenge\ChallengeRuntime;
+
+$drivers = ChallengeDrivers::defaults();            // telesign, telesign_verify, telesign_sms_verify
+
+$verifier = $drivers->make('telesign_verify', [
+    'customer_id' => '...',
+    'api_key' => '...',
+    'methods' => 'whatsapp,sms',
+], new ChallengeRuntime(
+    httpHandler: $myGuzzleHandler,   // optional: send provider HTTP through the host's transport
+    codeKey: $secret,                // required by drivers that generate the code (telesign)
+    timeout: 10,
+));
+
+$challenge = $verifier->dispatch('+37120000000');
+$verifier->verify($challenge, '1234567');
+```
+
+Each driver describes itself, so a host can publish a configuration form and log redaction without provider knowledge:
+`$drivers->options()` (merged across drivers), `$drivers->sensitiveKeys()`, `$drivers->redaction()`. Add your own with
+`$drivers->with(new MyDriver())` (implement `Kwidoo\SmsVerification\Contracts\ChallengeDriver`). Unknown drivers and missing
+options throw `ConfigurationException`.
+
+| Driver | Provider API | Code owned by | Options (* required) |
+|---|---|---|---|
+| `telesign` | Telesign Messaging | package (sealed) | `customer_id`*, `api_key`*, `url`, `message` (`:code`), `code_length`, `ttl` |
+| `telesign_verify` | Telesign Verify API | Telesign | `customer_id`*, `api_key`*, `url`, `methods`, `message_template`, `ttl` |
+| `telesign_sms_verify` | Telesign SMS Verify | Telesign | `customer_id`*, `api_key`*, `url`, `message` (`:code`/`$$CODE$$`), `language`, `ttl` |
+| `twilio` | Twilio Verify v2 | Twilio | `account_sid`*, `auth_token`*, `verify_sid`*, `channel` (sms), `locale`, `ttl` |
+| `vonage` | Vonage Verify v2 | Vonage | `api_key`*, `api_secret`*, `brand`*, `locale`, `ttl` |
+| `telnyx` | Telnyx Verify v2 | Telnyx | `api_key`*, `verify_profile_id`*, `url`, `ttl` |
+| `plivo` | Plivo Verify sessions | Plivo | `auth_id`*, `auth_token`*, `app_uuid`, `channel` (sms), `locale`, `brand_name`, `code_length`, `ttl` |
+| `sinch` | Sinch Verification | Sinch | `application_key`*, `application_secret`*, `url`, `ttl` |
+| `seven` | seven.io SMS | package (sealed) | `api_key`*, `from`, `url`, `message` (`:code`), `code_length`, `ttl` |
+
+"Code owned by provider": the challenge carries only the provider's reference and `verify()` asks the provider.
+"Package (sealed)": the provider only delivers text, so the verifier generates the code and the challenge carries an HMAC
+of it (needs `ChallengeRuntime::$codeKey`). Every driver sends its HTTP through `ChallengeRuntime::$httpHandler`
+(Twilio via `Twilio\Http\GuzzleClient`, Vonage via PSR-18, Plivo via `PlivoGuzzleHttpClient`, Sinch via
+`PendingRequest::setHandler()`, seven.io and Telnyx via package clients). A wrong, expired or used-up code is
+`false`; outages, rate limits and auth failures throw `VerifierException`.
+
+---|---|
+| `telesign` | `customer_id`*, `api_key`* (sensitive), `url` (https://rest-api.telesign.com), `message` (`:code`), `code_length` (6), `ttl` (300) |
+| `telesign_verify` | `customer_id`*, `api_key`*, `url` (https://verify.telesign.com), `methods` (sms), `message_template`, `ttl` |
+| `telesign_sms_verify` | `customer_id`*, `api_key`*, `url` (https://rest-ww.telesign.com), `message` (`:code` / `$$CODE$$`), `language`, `ttl` |
+
+---
+
 ## Console Command
 
 This package includes a console command to generate new custom verifiers from a **stub**:

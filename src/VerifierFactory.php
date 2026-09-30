@@ -3,6 +3,8 @@
 namespace Kwidoo\SmsVerification;
 
 use Illuminate\Contracts\Container\Container;
+use Kwidoo\SmsVerification\Challenge\OtpGenerator;
+use Kwidoo\SmsVerification\Challenge\OtpHasher;
 use Kwidoo\SmsVerification\Clients\SinchClient;
 use Kwidoo\SmsVerification\Contracts\VerifierInterface;
 use Kwidoo\SmsVerification\Exceptions\VerifierException;
@@ -10,7 +12,9 @@ use Kwidoo\SmsVerification\Verifiers\PlivoVerifier;
 use Kwidoo\SmsVerification\Verifiers\RoundRobinVerifier;
 use Kwidoo\SmsVerification\Verifiers\SevenVerifier;
 use Kwidoo\SmsVerification\Verifiers\SinchVerifier;
+use Kwidoo\SmsVerification\Verifiers\TelesignSmsVerifyVerifier;
 use Kwidoo\SmsVerification\Verifiers\TelesignVerifier;
+use Kwidoo\SmsVerification\Verifiers\TelesignVerifyVerifier;
 use Kwidoo\SmsVerification\Verifiers\TelnyxVerifier;
 use Kwidoo\SmsVerification\Verifiers\TwilioVerifier;
 use Kwidoo\SmsVerification\Verifiers\VonageVerifier;
@@ -20,6 +24,8 @@ use Vonage\Client as VonageClient;
 use Plivo\RestClient as PlivoClient;
 use Seven\Api\Client as SevenClient;
 use telesign\sdk\messaging\MessagingClient as TelesignClient;
+use telesign\enterprise\sdk\verify\OmniVerifyClient as TelesignOmniVerifyClient;
+use telesign\enterprise\sdk\verify\VerifyClient as TelesignVerifyClient;
 
 class VerifierFactory
 {
@@ -124,7 +130,38 @@ class VerifierFactory
      */
     protected function makeTelesign(): VerifierInterface
     {
-        return new TelesignVerifier($this->app->make(TelesignClient::class));
+        return new TelesignVerifier(
+            $this->app->make(TelesignClient::class),
+            OtpHasher::fromKey(config('sms-verification.challenge.key') ?: config('app.key')),
+            new OtpGenerator(),
+            (array) config('sms-verification.telesign', []),
+        );
+    }
+
+    /**
+     * Telesign Verify API: Telesign generates and checks the code.
+     *
+     * @return VerifierInterface
+     */
+    protected function makeTelesignVerify(): VerifierInterface
+    {
+        return new TelesignVerifyVerifier(
+            $this->app->make(TelesignOmniVerifyClient::class),
+            (array) config('sms-verification.telesign_verify', []),
+        );
+    }
+
+    /**
+     * Telesign SMS Verify API: Telesign generates and checks the code.
+     *
+     * @return VerifierInterface
+     */
+    protected function makeTelesignSmsVerify(): VerifierInterface
+    {
+        return new TelesignSmsVerifyVerifier(
+            $this->app->make(TelesignVerifyClient::class),
+            (array) config('sms-verification.telesign_sms_verify', []),
+        );
     }
 
     /**

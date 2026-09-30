@@ -229,6 +229,43 @@ $verifier = $factory->make('my_custom');
 
 ---
 
+## Stateless challenges
+
+Verifiers that implement `ChallengeVerifierInterface` keep nothing between sending and checking a code.
+`dispatch()` returns a `Challenge` (recipient, provider reference, opaque state, expiry) that the caller persists
+wherever it likes and hands back to `verify()`:
+
+```php
+use Kwidoo\SmsVerification\Challenge\Challenge;
+
+$verifier = $factory->make('telesign');
+
+$challenge = $verifier->dispatch('+37120000000');
+$store->put($id, $challenge->toArray());          // your storage, not the package's
+
+$valid = $verifier->verify(Challenge::fromArray($store->get($id)), $request->input('code'));
+```
+
+A wrong or expired code returns `false`; a provider failure throws `VerifierException`.
+For providers that generate the code themselves the state is empty; for Telesign (Messaging API) the package
+generates the code and the state holds only an HMAC of it, keyed with `SMS_VERIFICATION_CODE_KEY` (or `APP_KEY`),
+so whoever stores the challenge cannot read or brute force the code.
+
+### Telesign
+
+```env
+TELESIGN_CUSTOMER_ID=...
+TELESIGN_API_KEY=...
+# Production by default; the SDK itself defaults to the sandbox.
+TELESIGN_REST_ENDPOINT=https://rest-api.telesign.com
+TELESIGN_MESSAGE="Your verification code is :code"
+TELESIGN_CODE_LENGTH=6
+TELESIGN_CODE_TTL=300
+SMS_VERIFICATION_CODE_KEY=
+```
+
+---
+
 ## Console Command
 
 This package includes a console command to generate new custom verifiers from a **stub**:

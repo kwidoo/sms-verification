@@ -11,6 +11,8 @@ use Seven\Api\Client as SevenClient;
 use Vonage\Client\Credentials\Basic;
 use Vonage\Client\Credentials\Container as CredentialsContainer;
 use telesign\sdk\messaging\MessagingClient as TelesignClient;
+use telesign\enterprise\sdk\verify\OmniVerifyClient as TelesignOmniVerifyClient;
+use telesign\enterprise\sdk\verify\VerifyClient as TelesignVerifyClient;
 use Kwidoo\SmsVerification\Console\Commands\CreateSmsVerifier;
 
 
@@ -69,9 +71,36 @@ class SmsVerificationProvider extends ServiceProvider
         });
 
         $this->app->singleton(TelesignClient::class, function () {
+            // telesign/telesign 5.x: (customer_id, api_key, rest_endpoint,
+            // source, sdk_version_origin, sdk_version_dependency, timeout).
             return new TelesignClient(
                 config('sms-verification.telesign.customer_id'),
-                config('sms-verification.telesign.api_key')
+                config('sms-verification.telesign.api_key'),
+                config('sms-verification.telesign.rest_endpoint', 'https://rest-api.telesign.com'),
+                'php_telesign',
+                null,
+                null,
+                config('sms-verification.telesign.timeout', 10)
+            );
+        });
+
+        // telesign/telesignenterprise 5.x: (customer_id, api_key, rest_endpoint,
+        // timeout, proxy, handler) - the SDK fills in the version arguments.
+        $this->app->singleton(TelesignOmniVerifyClient::class, function () {
+            return new TelesignOmniVerifyClient(
+                config('sms-verification.telesign.customer_id'),
+                config('sms-verification.telesign.api_key'),
+                config('sms-verification.telesign_verify.rest_endpoint', 'https://verify.telesign.com'),
+                config('sms-verification.telesign_verify.timeout', 10)
+            );
+        });
+
+        $this->app->singleton(TelesignVerifyClient::class, function () {
+            return new TelesignVerifyClient(
+                config('sms-verification.telesign.customer_id'),
+                config('sms-verification.telesign.api_key'),
+                config('sms-verification.telesign_sms_verify.rest_endpoint', 'https://rest-ww.telesign.com'),
+                config('sms-verification.telesign_sms_verify.timeout', 10)
             );
         });
 

@@ -17,12 +17,13 @@
     ],
     "require": {
         "php": "^8.2",
-        "twilio/sdk": "^8.3",
-        "vonage/client": "^4.1",
-        "telnyx/telnyx-php": "^3.0",
         "plivo/plivo-php": "^4.66.5",
-        "telesign/telesign": "^3.0.4",
-        "seven.io/api": "6.0.0"
+        "seven.io/api": "6.0.0",
+        "telesign/telesign": "^5.2",
+        "telesign/telesignenterprise": "^5.3",
+        "telnyx/telnyx-php": "^3.0",
+        "twilio/sdk": "^8.3",
+        "vonage/client": "^4.1"
     },
     "require-dev": {
         "mockery/mockery": "^1.6",
@@ -53,7 +54,7 @@
             ]
         },
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-main": "1.2.x-dev"
         }
     }
 }
